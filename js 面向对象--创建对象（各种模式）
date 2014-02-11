@@ -1,0 +1,92 @@
+//一、工厂模式
+function createPerson(name,age,job){
+	var o = new Object();
+	o.name = name;
+	o.age = age;
+	o.job = job;
+	o.sayName = function(){
+		console.log(this.name);
+	};
+	return o;
+}
+var person1 = createPerson("lin",25,"golang");
+var person2 = createPerson("jz",25,"node");
+
+
+
+//二、构造函数模式
+function Person(name,age,job){
+	this.name = name;
+	this.age = age;
+	this.job = job;
+	this.sayName = function(){
+		console.log(this.name);
+	};
+}
+var person1 = new Person("lin",25,"golang");
+var person2 = new Person("jz",25,"node");
+注意：
+1.没有显示的创建对象
+2.直接将属性和方法赋给this
+3.没有return
+此外，Person是首字母大写，要创建Person的新实例必须使用new
+person1、person2各保存一个Person实例，这两个对象都有一个constructor（构造函数）属性，该属性指向Person:
+console.log(person1.constructor == Person);//true
+console.log(person2.constructor == Person);//true
+检测对象类型还是instanceof更可靠点：
+console.log(person1 instanceof Object);//true
+console.log(person1 instanceof Person);//true
+console.log(person2 instanceof Object);//true
+console.log(person2 instanceof Person);//true
+
+创建自定义构造函数胜过工厂模式的地方是 将来可以将它的实例标识为一种特定的类型。
+
+任何函数只要通过new来调用，就可以做为构造函数。
+
+//几种调用方式
+var person1 = new Person("lin",25,"golang"); //构造函数调用
+person1.sayName();
+
+Person("lin",25,"golang"); //普通调用
+sayName();
+//window.sayName();
+
+var o = new Object();//在另一个对象调用
+Person.call(o,"lin",25,"golang");
+o.sayName();
+
+
+构造函数模式的缺点：
+console.log(person1.sayName == person2.sayName);//false
+两个函数是不一样的。
+
+用以下的方式解决：
+function Person(name,age,job){
+	this.name = name;
+	this.age = age;
+	this.job = job;
+	this.sayName = sayName();
+}
+function sayName(){
+	console.log(this.name);
+}
+console.log(person1.sayName == person2.sayName);//true
+
+
+三、原型模式：
+原型模式的好处是可以让所有对象实例共享它包含的属性和方法。
+function Person(){}
+Person.prototype.name = "lin";
+Person.prototype.age = 25;
+Person.prototype.job = "golang";
+Person.prototype.sayName = function(){
+	console.log(this.name);
+};
+var person1 = new Person();
+person1.sayName();
+var person2 = new Person();
+person2.sayName();
+console.log(person1.sayName == person2.sayName);//true
+
+
+
