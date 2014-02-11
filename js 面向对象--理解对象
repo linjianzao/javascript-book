@@ -1,1 +1,157 @@
  
+//以前的写法
+var person = new Object();
+person.name = "linjz";
+person.age = 25;
+person.job = "php golang lua node";
+person.sayName = function(){
+	console.log(this.name);
+}
+person.sayName();
+
+
+//label出现后的写法
+var person = {
+	name : "linjz",
+	age : 25,
+	job : "php golang lua node",
+	sayName : function(){
+		console.log(this.name);
+	}
+};
+person.sayName();
+
+
+数据属性:
+[[Configureable]]:表示能否通过delete删除属性从而重新定义属性能否修改属性的特性，默认true
+[[Enumerable]]:表示能否通过for-in循环返回属性，默认true
+[[Writable]]:表示能否修改属性的值，默认true
+[[Value]]:包含这个属性的数据值。默认undefined。（就是存储值的地方）
+比如：
+var person = {name:"linjz"};
+name是属性它的值（[[Value]]） 就是"linjz"
+
+使用Object.defineProperty修改特性:
+var person = {};	
+Object.defineProperty(person,"name",{
+	writable : false,
+	value : "lin"
+});
+console.log(person.name);//结果是：lin
+person.name = "jz";
+console.log(person.name);//结果是：lin
+
+
+访问器属性：
+[[Configureable]]:表示能否通过delete删除属性从而重新定义属性能否修改属性的特性，默认true
+[[Enumerable]]:表示能否通过for-in循环返回属性，默认true
+[[Get]]:读取属性调用的函数，默认undefined
+[[Set]]:写入属性调用的函数，默认undefined
+
+访问器属性不能直接定义，必须通过Object.defineProperty
+var book = {
+	_year : 2004,
+	edition : 1
+};
+
+Object.defineProperty(book,"year",{
+	get : function(){
+		return this._year;
+	},
+	set : function(newValue){
+		if (newValue > 2004 ){
+			this._year = newValue;
+			this.edition += newValue - 2004;
+		}
+	}
+});
+
+book.year = 2005;
+console.log(book.edition); // 2
+console.log(book._year); // 2005
+
+
+// 使用遗留方法实现上面的方法
+//__defineGetter__()和__defineSetter__()
+var book = {
+	_year : 2004,
+	edition : 1
+};
+book.__defineGetter__("year",function(){
+	return this._year;
+});
+book.__defineSetter__("year",function(newValue){
+	if (newValue > 2004 ){
+		this._year = newValue;
+		this.edition += newValue - 2004;
+	}
+});
+
+book.year = 2005;
+console.log(book.edition); // 2
+console.log(book._year); //2005
+
+
+
+定义多个属性：
+//Object.defineProperties(
+
+var book = {};
+Object.defineProperties(book,{
+	_year : {
+		value : 2004
+	},
+	edition : {
+		value : 1
+	},
+	year : {
+		get : function(){
+			return this._year;
+		}
+	},
+	set : function(newValue){
+		if (newValue > 2004 ){
+			this._year = newValue;
+			this.edition += newValue - 2004;
+		}
+	}
+});
+
+
+//读取属性的特性
+使用Object.getOwnPropertyDescriptor读取特性，
+接收两个参数：属性所在的对象和要读取其描述符的属性名称。
+如果是访问器属性有：configurable、enumerable、get、set
+如果是数据属性有：configurable、enumerable、wirtable、value
+var book = {};
+Object.defineProperties(book,{
+	_year : {
+		value : 2004
+	},
+	edition : {
+		value : 1
+	},
+	year : {
+		get : function(){
+			return this._year;
+		}
+	},
+	set : function(newValue){
+		if (newValue > 2004 ){
+			this._year = newValue;
+			this.edition += newValue - 2004;
+		}
+	}
+});
+var descriptor = Object.getOwnPropertyDescriptor(book,"_year");
+console.log(descriptor.value);
+console.log(descriptor.configurable);
+
+
+
+
+总结：主要是 数据属性和访问器属性
+
+
+
+
