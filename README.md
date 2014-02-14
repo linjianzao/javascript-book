@@ -1,7 +1,5 @@
 javascript-book
 ===============
 <pre>
-<code>
-adsad
-</code>
+asdasd
 </pre>
